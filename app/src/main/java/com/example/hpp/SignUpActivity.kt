@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.example.hpp.databinding.ActivitySignUpBinding
+import com.example.hpp.model.BussinessModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -26,21 +28,36 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         binding.btnSignUp.setOnClickListener {
-            val email = binding.emailEt.text.toString()
-            val pass = binding.passET.text.toString()
+            val data = BussinessModel(
+                email = binding.emailEt.text.toString(),
+                password = binding.passET.text.toString(),
+            )
             val confPass = binding.confirmPass.text.toString()
 
-            if (email.isNotEmpty()&&pass.isNotEmpty()&&confPass.isNotEmpty()){
-                if (pass==confPass){
-                    firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
-                        if (it.isSuccessful){
+            if (data.email!!.isNotEmpty()&&data.password!!.isNotEmpty()&&confPass.isNotEmpty()){
+                if (data.password==confPass){
 
+//                    FirebaseDatabase.getInstance().getReference("bussiness")
+//                        .child(FirebaseAuth.getInstance().currentUser!!.email!!)
+//                        .setValue(data).addOnCompleteListener {
+//                            if (it.isSuccessful){
+//                                val intent = Intent(this, SignInActivity::class.java)
+//                                startActivity(intent)
+//                            }else{
+//                                Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+
+                    firebaseAuth.createUserWithEmailAndPassword(data.email!!, data.password!!).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            Toast.makeText(this, "Register Berhasil", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, SignInActivity::class.java)
                             startActivity(intent)
                         }else{
                             Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()
                         }
                     }
+
                 }else{
                     Toast.makeText(this, "Password tidak sama", Toast.LENGTH_SHORT).show()
                 }
